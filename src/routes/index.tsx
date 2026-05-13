@@ -113,7 +113,7 @@ function HomePage() {
         </div>
 
         <div className="grid gap-8 md:grid-cols-2">
-          {PROJECTS.map((p, i) => (
+          {PROJECTS.filter((p) => p.cover).slice(0, 3).map((p, i) => (
             <Link
               key={p.slug}
               to="/projects/$slug"
@@ -121,12 +121,16 @@ function HomePage() {
               className={`group relative block overflow-hidden rounded-3xl border border-border surface-raised transition-all hover:-translate-y-1 hover:shadow-elev-3 ${i === 0 ? "md:col-span-2" : ""}`}
             >
               <div className="aspect-[16/10] overflow-hidden">
-                <img
-                  src={p.cover}
-                  alt={p.title}
-                  loading="lazy"
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                />
+                {p.cover ? (
+                  <img
+                    src={p.cover}
+                    alt={p.title}
+                    loading="lazy"
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                ) : (
+                  <div className={`w-full h-full bg-gradient-to-br ${p.accent}`} />
+                )}
               </div>
               <div className="p-6 md:p-8 flex items-start justify-between gap-6">
                 <div>

@@ -53,68 +53,92 @@ function CaseStudy() {
 
       <header className="container-page pt-10 pb-12">
         <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
-          {p.category} · {p.year}
+          {p.kind} · {p.category} · {p.year}
         </p>
         <h1 className="mt-4 font-display text-5xl md:text-7xl leading-[0.95]">{p.title}</h1>
-        <p className="mt-6 max-w-3xl text-xl text-muted-foreground">{p.tagline}</p>
+        <p className="mt-3 font-display text-xl md:text-2xl text-muted-foreground">{p.subtitle}</p>
+        <p className="mt-6 max-w-3xl text-lg">{p.tagline}</p>
         <dl className="mt-10 grid grid-cols-2 md:grid-cols-4 gap-6 border-t border-border pt-8">
           <Meta label="Role" value={p.role} />
           <Meta label="Duration" value={p.duration} />
           <Meta label="Year" value={p.year} />
-          <Meta label="Category" value={p.category} />
+          <Meta label="Tools" value={p.tools.join(", ")} />
         </dl>
       </header>
 
       <section className="container-page">
-        <div className="rounded-3xl overflow-hidden border border-border shadow-elev-3">
-          <img src={p.cover} alt={p.title} className="w-full h-auto" />
-        </div>
+        <Cover project={p} />
       </section>
 
-      <section className="container-page py-20 grid md:grid-cols-12 gap-12">
-        <h2 className="md:col-span-4 font-display text-3xl">Overview</h2>
-        <p className="md:col-span-8 text-lg text-muted-foreground">{p.overview}</p>
-      </section>
+      <Section title="Overview"><p className="text-lg text-muted-foreground">{p.overview}</p></Section>
 
-      <section className="container-page py-12 grid md:grid-cols-12 gap-12 border-t border-border">
-        <h2 className="md:col-span-4 font-display text-3xl">Problem</h2>
-        <p className="md:col-span-8 text-lg text-muted-foreground">{p.problem}</p>
-      </section>
+      <Section title="Problem" bordered><p className="text-lg text-muted-foreground">{p.problem}</p></Section>
 
-      <section className="container-page py-12 grid md:grid-cols-12 gap-12 border-t border-border">
-        <h2 className="md:col-span-4 font-display text-3xl">Research</h2>
-        <ul className="md:col-span-8 space-y-3">
-          {p.research.map((r) => (
-            <li key={r} className="rounded-xl border border-border surface px-4 py-3">{r}</li>
+      <Section title="Solution" bordered><p className="text-lg text-muted-foreground">{p.solution}</p></Section>
+
+      <Section title="Key Focus" bordered>
+        <ul className="grid sm:grid-cols-2 gap-3">
+          {p.keyFocus.map((k) => (
+            <li key={k} className="rounded-xl border border-border surface px-4 py-3">{k}</li>
           ))}
         </ul>
-      </section>
+      </Section>
 
-      <section className="container-page py-12 grid md:grid-cols-12 gap-12 border-t border-border">
-        <h2 className="md:col-span-4 font-display text-3xl">Insights</h2>
-        <ol className="md:col-span-8 space-y-4">
-          {p.insights.map((it, i) => (
-            <li key={it} className="flex gap-4">
-              <span className="font-mono text-sm text-primary shrink-0 mt-1">0{i + 1}</span>
-              <p className="text-lg">{it}</p>
+      <Section title="Design Process" bordered>
+        <ol className="grid sm:grid-cols-2 md:grid-cols-3 gap-3">
+          {p.process.map((step, i) => (
+            <li key={step} className="rounded-xl border border-border surface-raised p-4">
+              <span className="font-mono text-xs text-primary">0{i + 1}</span>
+              <p className="mt-2">{step}</p>
             </li>
           ))}
         </ol>
-      </section>
+      </Section>
 
-      <section className="container-page py-12 grid md:grid-cols-12 gap-12 border-t border-border">
-        <h2 className="md:col-span-4 font-display text-3xl">Solution</h2>
-        <ul className="md:col-span-8 grid sm:grid-cols-2 gap-4">
-          {p.solution.map((s) => (
-            <li key={s} className="rounded-2xl border border-border surface-raised p-5">
-              <p className="text-base">{s}</p>
+      {p.research && p.research.length > 0 && (
+        <Section title="Research" bordered>
+          <ul className="space-y-3">
+            {p.research.map((r) => (
+              <li key={r} className="rounded-xl border border-border surface px-4 py-3">{r}</li>
+            ))}
+          </ul>
+        </Section>
+      )}
+
+      {p.insights && p.insights.length > 0 && (
+        <Section title="Insights" bordered>
+          <ol className="space-y-4">
+            {p.insights.map((it, i) => (
+              <li key={it} className="flex gap-4">
+                <span className="font-mono text-sm text-primary shrink-0 mt-1">0{i + 1}</span>
+                <p className="text-lg">{it}</p>
+              </li>
+            ))}
+          </ol>
+        </Section>
+      )}
+
+      <Section title="Features" bordered>
+        <ul className="grid sm:grid-cols-2 gap-4">
+          {p.features.map((f) => (
+            <li key={f} className="rounded-2xl border border-border surface-raised p-5">{f}</li>
+          ))}
+        </ul>
+      </Section>
+
+      <Section title="Key Screens" bordered>
+        <ul className="grid sm:grid-cols-2 gap-4">
+          {p.screens.map((s) => (
+            <li key={s.name} className="rounded-2xl border border-border surface-raised p-5">
+              <p className="font-display text-lg">{s.name}</p>
+              <p className="mt-2 text-sm text-muted-foreground">{s.description}</p>
             </li>
           ))}
         </ul>
-      </section>
+      </Section>
 
       <section className="container-page py-16 border-t border-border">
-        <h2 className="font-display text-3xl">Results</h2>
+        <h2 className="font-display text-3xl">Outcome &amp; Impact</h2>
         <dl className="mt-8 grid sm:grid-cols-3 gap-6">
           {p.results.map((r) => (
             <div key={r.label} className="rounded-2xl border border-border bg-gradient-brand p-6 text-primary-foreground shadow-brand">
@@ -125,10 +149,9 @@ function CaseStudy() {
         </dl>
       </section>
 
-      <section className="container-page py-16 grid md:grid-cols-12 gap-12 border-t border-border">
-        <h2 className="md:col-span-4 font-display text-3xl">Reflection</h2>
-        <p className="md:col-span-8 font-display text-2xl leading-snug">{p.reflection}</p>
-      </section>
+      <Section title="Reflection" bordered>
+        <p className="font-display text-2xl leading-snug">{p.reflection}</p>
+      </Section>
 
       <section className="container-page py-16">
         <Link
@@ -147,11 +170,39 @@ function CaseStudy() {
   );
 }
 
+function Section({ title, children, bordered }: { title: string; children: React.ReactNode; bordered?: boolean }) {
+  return (
+    <section className={`container-page py-12 grid md:grid-cols-12 gap-12 ${bordered ? "border-t border-border" : ""}`}>
+      <h2 className="md:col-span-4 font-display text-3xl">{title}</h2>
+      <div className="md:col-span-8">{children}</div>
+    </section>
+  );
+}
+
 function Meta({ label, value }: { label: string; value: string }) {
   return (
     <div>
       <dt className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground">{label}</dt>
       <dd className="mt-2">{value}</dd>
+    </div>
+  );
+}
+
+function Cover({ project: p }: { project: Project }) {
+  if (p.cover) {
+    return (
+      <div className="rounded-3xl overflow-hidden border border-border shadow-elev-3">
+        <img src={p.cover} alt={p.title} className="w-full h-auto" />
+      </div>
+    );
+  }
+  return (
+    <div className={`rounded-3xl overflow-hidden border border-border shadow-elev-3 aspect-[16/9] bg-gradient-to-br ${p.accent} flex items-end p-10`}>
+      <div className="text-white">
+        <p className="font-mono text-xs uppercase tracking-widest opacity-80">{p.kind}</p>
+        <p className="mt-2 font-display text-4xl md:text-6xl drop-shadow">{p.title}</p>
+        <p className="mt-2 opacity-90 max-w-xl">{p.subtitle}</p>
+      </div>
     </div>
   );
 }
