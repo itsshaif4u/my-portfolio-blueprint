@@ -1,6 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ArrowUpRight, ArrowLeft } from "lucide-react";
-import { PROJECTS, getProject } from "@/data/projects";
+import { PROJECTS, getProject, type Project } from "@/data/projects";
 
 export const Route = createFileRoute("/projects/$slug")({
   loader: ({ params }) => {
@@ -39,7 +39,7 @@ export const Route = createFileRoute("/projects/$slug")({
 });
 
 function CaseStudy() {
-  const { project: p } = Route.useLoaderData();
+  const { project: p } = Route.useLoaderData() as { project: Project };
   const idx = PROJECTS.findIndex((x) => x.slug === p.slug);
   const next = PROJECTS[(idx + 1) % PROJECTS.length];
 
