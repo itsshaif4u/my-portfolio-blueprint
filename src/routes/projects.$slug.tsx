@@ -79,11 +79,29 @@ function CaseStudy() {
         <Cover project={p} />
       </section>
 
-      <Section title="Overview"><p className="text-lg text-muted-foreground">{p.overview}</p></Section>
+      {/* Sticky chapter nav */}
+      <nav
+        aria-label="Case study sections"
+        className="sticky top-16 z-30 border-y border-border bg-background/80 backdrop-blur-xl"
+      >
+        <div className="container-page flex gap-1 overflow-x-auto py-3 text-sm scrollbar-hide">
+          {SECTIONS.map((s) => (
+            <a
+              key={s.id}
+              href={`#${s.id}`}
+              className="shrink-0 rounded-full px-3 py-1.5 text-muted-foreground hover:text-primary hover:bg-accent/40 transition-colors font-mono text-[11px] uppercase tracking-widest"
+            >
+              {s.label}
+            </a>
+          ))}
+        </div>
+      </nav>
 
-      <Section title="Problem" bordered><p className="text-lg text-muted-foreground">{p.problem}</p></Section>
+      <Section id="overview" title="Overview"><p className="text-lg text-muted-foreground">{p.overview}</p></Section>
 
-      <Section title="Solution" bordered><p className="text-lg text-muted-foreground">{p.solution}</p></Section>
+      <Section id="problem" title="Problem" bordered><p className="text-lg text-muted-foreground">{p.problem}</p></Section>
+
+      <Section id="solution" title="Solution" bordered><p className="text-lg text-muted-foreground">{p.solution}</p></Section>
 
       <Section title="Key Focus" bordered>
         <ul className="grid sm:grid-cols-2 gap-3">
@@ -93,7 +111,7 @@ function CaseStudy() {
         </ul>
       </Section>
 
-      <Section title="Design Process" bordered>
+      <Section id="process" title="Design Process" bordered>
         <ol className="grid sm:grid-cols-2 md:grid-cols-3 gap-3">
           {p.process.map((step, i) => (
             <li key={step} className="rounded-xl border border-border surface-raised p-4">
@@ -105,7 +123,7 @@ function CaseStudy() {
       </Section>
 
       {p.research && p.research.length > 0 && (
-        <Section title="Research" bordered>
+        <Section id="research" title="Research" bordered>
           <ul className="space-y-3">
             {p.research.map((r) => (
               <li key={r} className="rounded-xl border border-border surface px-4 py-3">{r}</li>
@@ -146,7 +164,7 @@ function CaseStudy() {
         </ul>
       </Section>
 
-      <section className="container-page py-16 border-t border-border">
+      <section id="outcome" className="container-page py-16 border-t border-border scroll-mt-32">
         <h2 className="font-display text-3xl">Outcome &amp; Impact</h2>
         <dl className="mt-8 grid sm:grid-cols-3 gap-6">
           {p.results.map((r) => (
@@ -179,9 +197,9 @@ function CaseStudy() {
   );
 }
 
-function Section({ title, children, bordered }: { title: string; children: React.ReactNode; bordered?: boolean }) {
+function Section({ title, children, bordered, id }: { title: string; children: React.ReactNode; bordered?: boolean; id?: string }) {
   return (
-    <section className={`container-page py-12 grid md:grid-cols-12 gap-12 ${bordered ? "border-t border-border" : ""}`}>
+    <section id={id} className={`container-page py-12 grid md:grid-cols-12 gap-12 scroll-mt-32 ${bordered ? "border-t border-border" : ""}`}>
       <h2 className="md:col-span-4 font-display text-3xl">{title}</h2>
       <div className="md:col-span-8">{children}</div>
     </section>
@@ -196,6 +214,7 @@ function Meta({ label, value }: { label: string; value: string }) {
     </div>
   );
 }
+
 
 function Cover({ project: p }: { project: Project }) {
   if (p.cover) {
