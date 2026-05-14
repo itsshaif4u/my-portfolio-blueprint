@@ -86,8 +86,9 @@
   --shadow-elevation-3: 0 24px 60px rgba(0,0,0,.45);
   --shadow-brand-glow: 0 12px 48px oklch(0.62 0.24 295 / 0.45);
 
-  --transition-base: 250ms cubic-bezier(.2,.8,.2,1);
-  --transition-slow: 600ms cubic-bezier(.2,.8,.2,1);
+  --ease-premium: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --transition-base: 250ms var(--ease-premium);
+  --transition-slow: 600ms var(--ease-premium);
 }
 
 .light {
