@@ -1,13 +1,14 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowUpRight, Sparkles } from "lucide-react";
+import { ArrowUpRight, Download, Sparkles } from "lucide-react";
 import heroImg from "@/assets/hero-portrait.jpg";
 import { PROJECTS } from "@/data/projects";
+import { useCountUp } from "@/hooks/use-motion";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Shaif Alam — Product Designer" },
-      { name: "description", content: "He thinks like a product designer. Portfolio of Shaif Alam — case studies, process, and resume." },
+      { name: "description", content: "Product designer building clear, human, measurably better digital products. UX & UI case studies, process, and resume." },
       { property: "og:title", content: "Shaif Alam — Product Designer" },
       { property: "og:description", content: "He thinks like a product designer." },
       { property: "og:url", content: "/" },
@@ -17,11 +18,11 @@ export const Route = createFileRoute("/")({
   component: HomePage,
 });
 
-const METRICS = [
-  { v: "120+", l: "Research participants" },
-  { v: "350+", l: "Screens designed" },
-  { v: "40+", l: "Iterations shipped" },
-  { v: "94%", l: "Usability success rate" },
+const METRICS: { n: number; suffix: string; l: string }[] = [
+  { n: 120, suffix: "+", l: "Research participants" },
+  { n: 350, suffix: "+", l: "Screens designed" },
+  { n: 40, suffix: "+", l: "Iterations shipped" },
+  { n: 94, suffix: "%", l: "Usability success rate" },
 ];
 
 const SKILLS = [
@@ -41,6 +42,23 @@ const TESTIMONIALS = [
   { q: "Rare blend of taste, rigor, and stakeholder empathy.", a: "Sara Khan", r: "Engineering Manager" },
   { q: "Our roadmap got 2× sharper after he joined.", a: "Devansh Roy", r: "Founder & CEO" },
 ];
+
+const TRUSTED_BY = ["Finance Pulse", "NikahKaro", "AdWaya Tech", "JobConnect", "TrendJunction", "ShopSmart"];
+
+function CounterTile({ n, suffix, l }: { n: number; suffix: string; l: string }) {
+  const { ref, value } = useCountUp(n);
+  return (
+    <div>
+      <dt
+        ref={ref as React.RefObject<HTMLElement>}
+        className="font-display text-3xl md:text-4xl text-gradient tabular-nums"
+      >
+        {value}{suffix}
+      </dt>
+      <dd className="mt-1 font-mono text-[11px] uppercase tracking-widest text-muted-foreground">{l}</dd>
+    </div>
+  );
+}
 
 function HomePage() {
   return (
@@ -65,22 +83,26 @@ function HomePage() {
                 to="/projects"
                 className="inline-flex items-center gap-2 rounded-full bg-gradient-brand px-5 py-3 text-sm font-medium text-primary-foreground shadow-brand hover:opacity-95 transition"
               >
-                View case studies <ArrowUpRight className="h-4 w-4" />
+                View my work <ArrowUpRight className="h-4 w-4" />
               </Link>
               <Link
                 to="/contact"
                 className="inline-flex items-center rounded-full border border-border bg-surface px-5 py-3 text-sm font-medium hover:bg-accent transition"
               >
-                Start a project
+                Let's design together
               </Link>
+              <a
+                href="/Resume_Shaif_Alam.pdf"
+                download
+                className="inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-medium text-foreground hover:text-primary transition"
+              >
+                <Download className="h-4 w-4" /> Download resume
+              </a>
             </div>
 
             <dl className="mt-14 grid grid-cols-2 md:grid-cols-4 gap-6">
               {METRICS.map((m) => (
-                <div key={m.l}>
-                  <dt className="font-display text-3xl md:text-4xl text-gradient">{m.v}</dt>
-                  <dd className="mt-1 font-mono text-[11px] uppercase tracking-widest text-muted-foreground">{m.l}</dd>
-                </div>
+                <CounterTile key={m.l} {...m} />
               ))}
             </dl>
           </div>
@@ -90,13 +112,30 @@ function HomePage() {
             <div className="relative rounded-3xl overflow-hidden border border-border shadow-elev-3">
               <img
                 src={heroImg}
-                alt="Portrait silhouette of Shaif Alam, product designer"
+                alt="Portrait of Shaif Alam, product designer"
                 width={1024}
                 height={1280}
                 className="w-full h-auto"
               />
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* SOCIAL PROOF — TRUSTED-BY STRIP */}
+      <section aria-label="Selected work and clients" className="border-y border-border surface">
+        <div className="container-page py-6 flex flex-wrap items-center gap-x-10 gap-y-3 justify-between">
+          <p className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground shrink-0">Selected work for</p>
+          <ul className="flex flex-wrap items-center gap-x-8 gap-y-2">
+            {TRUSTED_BY.map((b) => (
+              <li
+                key={b}
+                className="font-display text-base md:text-lg text-muted-foreground/70 hover:text-primary transition-colors"
+              >
+                {b}
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 
@@ -118,24 +157,29 @@ function HomePage() {
               key={p.slug}
               to="/projects/$slug"
               params={{ slug: p.slug }}
-              className={`group relative block overflow-hidden rounded-3xl border border-border surface-raised transition-all hover:-translate-y-1 hover:shadow-elev-3 ${i === 0 ? "md:col-span-2" : ""}`}
+              className={`group relative block overflow-hidden rounded-3xl border border-border surface-raised hover-lift ${i === 0 ? "md:col-span-2" : ""}`}
             >
-              <div className="aspect-[16/10] overflow-hidden">
+              <div className="aspect-[16/10] overflow-hidden relative">
                 {p.cover ? (
                   <img
                     src={p.cover}
-                    alt={p.title}
+                    alt={`${p.title} case study cover`}
                     loading="lazy"
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                   />
                 ) : (
                   <div className={`w-full h-full bg-gradient-to-br ${p.accent}`} />
                 )}
+                {p.results?.[0] && (
+                  <span className="absolute top-4 left-4 rounded-full bg-background/85 backdrop-blur px-3 py-1 text-xs font-mono uppercase tracking-widest border border-border">
+                    {p.results[0].value} {p.results[0].label}
+                  </span>
+                )}
               </div>
               <div className="p-6 md:p-8 flex items-start justify-between gap-6">
                 <div>
                   <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
-                    {p.category} · {p.year}
+                    {p.kind} · {p.year}
                   </p>
                   <h3 className="mt-2 font-display text-2xl md:text-3xl">{p.title}</h3>
                   <p className="mt-2 text-muted-foreground max-w-lg">{p.tagline}</p>
@@ -167,7 +211,7 @@ function HomePage() {
           <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground">Skills</p>
           <ul className="mt-4 flex flex-wrap gap-2">
             {SKILLS.map((s) => (
-              <li key={s} className="rounded-full border border-border bg-surface px-3 py-1.5 text-sm">
+              <li key={s} className="rounded-full border border-border bg-surface px-3 py-1.5 text-sm hover:border-primary/50 hover:text-primary transition-colors">
                 {s}
               </li>
             ))}
@@ -181,7 +225,7 @@ function HomePage() {
         <h2 className="mt-2 font-display text-4xl md:text-5xl">A calm, deliberate process.</h2>
         <div className="mt-12 grid gap-6 md:grid-cols-4">
           {PROCESS.map((s) => (
-            <div key={s.n} className="rounded-2xl border border-border surface p-6 hover:shadow-brand transition">
+            <div key={s.n} className="rounded-2xl border border-border surface p-6 hover-lift">
               <p className="font-mono text-xs text-primary">{s.n}</p>
               <h3 className="mt-3 font-display text-2xl">{s.t}</h3>
               <p className="mt-2 text-sm text-muted-foreground">{s.d}</p>
@@ -196,7 +240,7 @@ function HomePage() {
         <h2 className="mt-2 font-display text-4xl md:text-5xl">From people I've shipped with.</h2>
         <div className="mt-12 grid gap-6 md:grid-cols-3">
           {TESTIMONIALS.map((t) => (
-            <figure key={t.a} className="rounded-2xl border border-border surface-raised p-6">
+            <figure key={t.a} className="rounded-2xl border border-border surface-raised p-6 hover-lift">
               <blockquote className="font-display text-xl leading-snug">"{t.q}"</blockquote>
               <figcaption className="mt-6 font-mono text-xs uppercase tracking-widest text-muted-foreground">
                 {t.a} · {t.r}
