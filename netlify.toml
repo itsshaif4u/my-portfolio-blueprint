@@ -1,31 +1,25 @@
 [build]
-  command = "bun run build"
-  publish = "dist/client"
+  command = "npm install && npm run build"
+  publish = "dist"
   functions = "netlify/functions"
 
 [build.environment]
   NODE_VERSION = "20"
   NODE_ENV = "production"
-  # TanStack Start SSR configuration
-  VITE_SERVER_ENTRY = "src/server.ts"
-
-[functions]
-  directory = "netlify/functions"
-  node_bundler = "esbuild"
 
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
-  conditions = { Role = ["public"] }
 
 [[headers]]
   for = "/*"
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
     X-Content-Type-Options = "nosniff"
-    X-Frame-Options = "DENY"
+    X-Frame-Options = "SAMEORIGIN"
     X-XSS-Protection = "1; mode=block"
+    Referrer-Policy = "strict-origin-when-cross-origin"
 
 [[headers]]
   for = "/assets/*"
@@ -33,6 +27,5 @@
     Cache-Control = "public, max-age=31536000, immutable"
 
 [dev]
-  command = "bun run dev"
+  command = "npm run dev"
   port = 5173
-  publish = "dist/client"
