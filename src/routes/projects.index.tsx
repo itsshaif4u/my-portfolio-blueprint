@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowUpRight } from "lucide-react";
-import { PROJECTS, PROJECT_GROUPS, type Project } from "@/data/projects";
+import { useMemo, useState } from "react";
+import { PROJECTS, PROJECT_GROUPS, type Project, type ProjectKind } from "@/data/projects";
 
 export const Route = createFileRoute("/projects/")({
   head: () => ({
@@ -16,7 +17,27 @@ export const Route = createFileRoute("/projects/")({
   component: ProjectsPage,
 });
 
+type Filter = "All" | ProjectKind;
+
+const FILTERS: Filter[] = ["All", "UX Case Study", "UI Case Study", "Practice Project"];
+
 function ProjectsPage() {
+  const [filter, setFilter] = useState<Filter>("All");
+
+  const visibleGroups = useMemo(() => {
+    return PROJECT_GROUPS.map((g) => ({
+      ...g,
+      items: PROJECTS.filter((p) => p.kind === g.kind),
+    })).filter((g) => g.items.length > 0 && (filter === "All" || g.kind === filter));
+  }, [filter]);
+
+  const counts = useMemo(() => {
+    const m = new Map<Filter, number>();
+    m.set("All", PROJECTS.length);
+    PROJECT_GROUPS.forEach((g) => m.set(g.kind, PROJECTS.filter((p) => p.kind === g.kind).length));
+    return m;
+  }, []);
+
   return (
     <>
       <section className="container-page pt-20 pb-10">
@@ -28,28 +49,48 @@ function ProjectsPage() {
           Eleven projects across UX case studies, UI case studies, and practice work —
           chosen because they best show how I think, not just what I shipped.
         </p>
+
+        {/* Filter chips */}
+        <div role="tablist" aria-label="Filter projects" className="mt-10 flex flex-wrap gap-2">
+          {FILTERS.map((f) => {
+            const active = filter === f;
+            return (
+              <button
+                key={f}
+                role="tab"
+                aria-selected={active}
+                type="button"
+                onClick={() => setFilter(f)}
+                className={`rounded-full border px-4 py-2 text-sm font-medium transition-colors ${
+                  active
+                    ? "bg-gradient-brand text-primary-foreground border-transparent shadow-brand"
+                    : "border-border bg-surface text-muted-foreground hover:text-foreground hover:border-primary/40"
+                }`}
+              >
+                {f}
+                <span className="ml-2 font-mono text-[10px] opacity-70">{counts.get(f) ?? 0}</span>
+              </button>
+            );
+          })}
+        </div>
       </section>
 
-      {PROJECT_GROUPS.map((group) => {
-        const items = PROJECTS.filter((p) => p.kind === group.kind);
-        if (items.length === 0) return null;
-        return (
-          <section key={group.kind} className="container-page py-16 border-t border-border">
-            <div className="flex items-end justify-between gap-6 mb-10">
-              <div>
-                <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground">{group.kind}</p>
-                <h2 className="mt-2 font-display text-3xl md:text-4xl">{group.kind}s</h2>
-              </div>
-              <p className="hidden md:block max-w-md text-sm text-muted-foreground">{group.description}</p>
+      {visibleGroups.map((group) => (
+        <section key={group.kind} className="container-page py-16 border-t border-border">
+          <div className="flex items-end justify-between gap-6 mb-10">
+            <div>
+              <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground">{group.kind}</p>
+              <h2 className="mt-2 font-display text-3xl md:text-4xl">{group.kind}s</h2>
             </div>
-            <div className="grid gap-8 md:grid-cols-2">
-              {items.map((p, i) => (
-                <ProjectCard key={p.slug} project={p} index={i} />
-              ))}
-            </div>
-          </section>
-        );
-      })}
+            <p className="hidden md:block max-w-md text-sm text-muted-foreground">{group.description}</p>
+          </div>
+          <div className="grid gap-8 md:grid-cols-2">
+            {group.items.map((p, i) => (
+              <ProjectCard key={p.slug} project={p} index={i} />
+            ))}
+          </div>
+        </section>
+      ))}
 
       <div className="pb-24" />
     </>
@@ -61,13 +102,13 @@ function ProjectCard({ project: p, index }: { project: Project; index: number })
     <Link
       to="/projects/$slug"
       params={{ slug: p.slug }}
-      className="group block overflow-hidden rounded-3xl border border-border surface-raised hover:shadow-elev-3 transition"
+      className="group block overflow-hidden rounded-3xl border border-border surface-raised hover-lift"
     >
-      <div className="aspect-[16/10] overflow-hidden">
+      <div className="aspect-[16/10] overflow-hidden relative">
         {p.cover ? (
           <img
             src={p.cover}
-            alt={p.title}
+            alt={`${p.title} case study cover`}
             loading="lazy"
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
           />
@@ -78,6 +119,11 @@ function ProjectCard({ project: p, index }: { project: Project; index: number })
               <p className="mt-2 font-display text-3xl md:text-4xl drop-shadow">{p.title}</p>
             </div>
           </div>
+        )}
+        {p.results?.[0] && (
+          <span className="absolute top-4 left-4 rounded-full bg-background/85 backdrop-blur px-3 py-1 text-xs font-mono uppercase tracking-widest border border-border">
+            {p.results[0].value} {p.results[0].label}
+          </span>
         )}
       </div>
       <div className="p-6 md:p-8">
