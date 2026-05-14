@@ -38,6 +38,15 @@ export const Route = createFileRoute("/projects/$slug")({
   component: CaseStudy,
 });
 
+const SECTIONS = [
+  { id: "overview", label: "Overview" },
+  { id: "problem", label: "Problem" },
+  { id: "solution", label: "Solution" },
+  { id: "process", label: "Process" },
+  { id: "research", label: "Research" },
+  { id: "outcome", label: "Outcome" },
+] as const;
+
 function CaseStudy() {
   const { project: p } = Route.useLoaderData() as { project: Project };
   const idx = PROJECTS.findIndex((x) => x.slug === p.slug);
