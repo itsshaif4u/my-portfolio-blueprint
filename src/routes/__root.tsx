@@ -57,11 +57,25 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   );
 }
 
+const PERSON_LD = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "Shaif Alam",
+  jobTitle: "Product Designer",
+  url: "/",
+  sameAs: [
+    "https://www.linkedin.com/in/shaif",
+    "https://dribbble.com/shaif",
+  ],
+  knowsAbout: ["Product Design", "UX Research", "Design Systems", "Interaction Design"],
+};
+
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
   head: () => ({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { name: "color-scheme", content: "dark light" },
       { title: "Shaif Alam — Product Designer" },
       { name: "description", content: "Shaif Alam is a product designer building clear, human and measurable digital products." },
       { name: "author", content: "Shaif Alam" },
@@ -70,6 +84,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "Shaif Alam" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:creator", content: "@shaif" },
+      { name: "theme-color", content: "#0b0b1a" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
@@ -78,6 +94,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap",
+      },
+    ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify(PERSON_LD),
       },
     ],
   }),
