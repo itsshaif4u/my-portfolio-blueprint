@@ -39,12 +39,31 @@ function ResumePage() {
           <p className="mt-3 text-muted-foreground">Product Designer · Based in India · Open to remote</p>
         </div>
         <a
-          href="#"
-          onClick={(e) => e.preventDefault()}
-          className="inline-flex items-center gap-2 rounded-full bg-gradient-brand px-5 py-2.5 text-sm text-primary-foreground shadow-brand"
+          href="/Resume_Shaif_Alam.pdf"
+          download
+          className="inline-flex items-center gap-2 rounded-full bg-gradient-brand px-5 py-2.5 text-sm text-primary-foreground shadow-brand hover:opacity-95 transition"
         >
           <Download className="h-4 w-4" /> Download PDF
         </a>
+      </section>
+
+      <section className="container-page pb-12">
+        <div className="rounded-3xl border border-border surface-raised overflow-hidden shadow-elev-2">
+          <object
+            data="/Resume_Shaif_Alam.pdf#view=FitH"
+            type="application/pdf"
+            className="w-full h-[80vh] bg-background"
+            aria-label="Resume preview"
+          >
+            <div className="p-10 text-center text-muted-foreground">
+              Your browser can't preview PDFs.{" "}
+              <a href="/Resume_Shaif_Alam.pdf" className="text-primary underline" download>
+                Download the resume
+              </a>{" "}
+              instead.
+            </div>
+          </object>
+        </div>
       </section>
 
       <section className="container-page py-12 grid md:grid-cols-12 gap-12">
