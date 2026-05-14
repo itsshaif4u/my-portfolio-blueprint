@@ -126,6 +126,16 @@
   }
   h1,h2,h3,h4 { font-family: var(--font-display); letter-spacing: -0.02em; }
   ::selection { background: var(--primary); color: var(--primary-foreground); }
+  /* Visible focus on dark/light */
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+  /* Min tap target on touch devices */
+  @media (pointer: coarse) {
+    a, button, [role="button"] { min-height: 44px; }
+  }
 }
 
 @layer utilities {
@@ -154,19 +164,38 @@
     background-size: 3px 3px;
     opacity: 0.04; pointer-events: none;
   }
-  .anim-fade-up { animation: fadeUp 700ms cubic-bezier(.2,.8,.2,1) both; }
+  .anim-fade-up { animation: fadeUp 700ms var(--ease-premium) both; }
   .anim-fade { animation: fade 700ms ease-out both; }
+  .reveal { opacity: 0; transform: translateY(20px); transition: opacity 600ms var(--ease-premium), transform 600ms var(--ease-premium); }
+  .reveal.is-visible { opacity: 1; transform: translateY(0); }
+  .hover-lift { transition: transform 250ms var(--ease-premium), box-shadow 250ms var(--ease-premium); }
+  .hover-lift:hover { transform: translateY(-4px); box-shadow: 0 20px 40px -20px oklch(0.62 0.24 295 / 0.35); }
+  .scroll-progress {
+    position: fixed; top: 0; left: 0; right: 0; height: 3px;
+    transform-origin: 0 50%; transform: scaleX(var(--p, 0));
+    background: var(--gradient-brand);
+    z-index: 60; pointer-events: none;
+  }
 }
 
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(16px); }
   to { opacity: 1; transform: translateY(0); }
 }
-@keyframes fade {
-  from { opacity: 0; } to { opacity: 1; }
-}
+@keyframes fade { from { opacity: 0; } to { opacity: 1; } }
 @keyframes pulseGlow {
   0%,100% { opacity: 0.55; transform: scale(1); }
   50% { opacity: 0.9; transform: scale(1.08); }
 }
 .animate-pulse-glow { animation: pulseGlow 4s ease-in-out infinite; }
+
+/* Respect reduced motion globally */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
